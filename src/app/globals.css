@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+/* 加载 JS 配置文件中的自定义主题 */
+@config "../../tailwind.config.ts";
+
+/* ── 自定义主题变量 ── */
+@theme {
+  --color-border: hsl(240 3.7% 15.9%);
+  --color-background: hsl(240 10% 3.9%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-bg-light: hsl(350 30% 97%);
+  --color-bg-dark: hsl(240 6% 10%);
+}
+
+/* ── 自定义基础层 ── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-bg-light);
+    color: hsl(240 6% 15%);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: var(--color-bg-dark);
+    color: var(--color-foreground);
+  }
+
+  /* 选中文字样式 */
+  ::selection {
+    background-color: rgb(139 92 246 / 0.2);
+    color: inherit;
+  }
+
+  .dark ::selection {
+    background-color: rgb(139 92 246 / 0.3);
+    color: white;
+  }
+
+  /* 自定义滚动条 */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(240 3.7% 35%);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(240 3.7% 45%);
+  }
+}
+
+/* ── 工具类 ── */
+@utility text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #a78bfa, #e879f9, #f472b6);
+}
+
+@utility glass {
+  background-color: rgb(255 255 255 / 0.05);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── MDX 文章排版 ── */
+.prose-blog {
+  --tw-prose-body: #3f3f46;
+  --tw-prose-headings: #18181b;
+  --tw-prose-links: #7c3aed;
+  --tw-prose-bold: #27272a;
+  --tw-prose-code: #db2777;
+  --tw-prose-quotes: #71717a;
+  --tw-prose-quote-borders: #8b5cf6;
+  --tw-prose-pre-bg: #f4f4f5;
+}
+
+.dark .prose-blog {
+  --tw-prose-body: #d4d4d8;
+  --tw-prose-headings: #fafafa;
+  --tw-prose-links: #a78bfa;
+  --tw-prose-bold: #f4f4f5;
+  --tw-prose-code: #f472b6;
+  --tw-prose-quotes: #a1a1aa;
+  --tw-prose-quote-borders: #8b5cf6;
+  --tw-prose-pre-bg: #18181b;
+}
+
+.prose-blog pre {
+  border-radius: 0.75rem;
+  border: 1px solid #27272a;
+}
+
+.prose-blog code::before,
+.prose-blog code::after {
+  content: none;
+}
+
+.prose-blog a {
+  text-decoration: underline;
+  text-decoration-color: rgb(139 92 246 / 0.5);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s;
+}
+.prose-blog a:hover {
+  text-decoration-color: #a78bfa;
+}
+
+.prose-blog img {
+  border-radius: 0.75rem;
+}

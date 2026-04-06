@@ -1,0 +1,80 @@
+---
+title: "React 高级模式：Compound Components 实践"
+date: "2026-03-15"
+excerpt: "使用复合组件模式构建灵活可组合的 UI 组件库，提升代码可维护性。"
+tags: ["React", "设计模式"]
+coverImage: "/images/lls8.png"
+---
+
+## 什么是复合组件模式
+
+复合组件（Compound Components）是一种 React 设计模式，让一组组件协同工作，共享隐式状态。
+
+最典型的例子就是 HTML 的 `<select>` 和 `<option>`：
+
+```html
+<select>
+  <option value="1">选项一</option>
+  <option value="2">选项二</option>
+</select>
+```
+
+## 实现一个 Tabs 组件
+
+```tsx
+const TabsContext = createContext<{
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+} | null>(null);
+
+function Tabs({ children, defaultTab }: { children: ReactNode; defaultTab: string }) {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <div>{children}</div>
+    </TabsContext.Provider>
+  );
+}
+
+function TabList({ children }: { children: ReactNode }) {
+  return <div className="flex gap-2 border-b border-zinc-800">{children}</div>;
+}
+
+function Tab({ value, children }: { value: string; children: ReactNode }) {
+  const ctx = useContext(TabsContext)!;
+  return (
+    <button
+      onClick={() => ctx.setActiveTab(value)}
+      className={cn("px-4 py-2", ctx.activeTab === value && "border-b-2 border-violet-500")}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TabPanel({ value, children }: { value: string; children: ReactNode }) {
+  const ctx = useContext(TabsContext)!;
+  if (ctx.activeTab !== value) return null;
+  return <div className="py-4">{children}</div>;
+}
+
+// 组合导出
+Tabs.List = TabList;
+Tabs.Tab = Tab;
+Tabs.Panel = TabPanel;
+```
+
+## 使用方式
+
+```tsx
+<Tabs defaultTab="tab1">
+  <Tabs.List>
+    <Tabs.Tab value="tab1">概览</Tabs.Tab>
+    <Tabs.Tab value="tab2">详情</Tabs.Tab>
+  </Tabs.List>
+  <Tabs.Panel value="tab1">概览内容</Tabs.Panel>
+  <Tabs.Panel value="tab2">详情内容</Tabs.Panel>
+</Tabs>
+```
+
+这种模式让 API 简洁直观，同时保持了高度的灵活性。

@@ -1,0 +1,100 @@
+---
+title: "前端性能优化实战清单"
+date: "2026-03-05"
+excerpt: "Core Web Vitals 优化策略、图片懒加载、代码分割、缓存策略全方位解析。"
+tags: ["性能优化", "前端"]
+---
+
+## Core Web Vitals
+
+Google 定义的三大核心指标：
+
+| 指标 | 含义 | 目标值 |
+|------|------|--------|
+| **LCP** | 最大内容绘制 | < 2.5s |
+| **INP** | 交互到下次绘制 | < 200ms |
+| **CLS** | 累计布局偏移 | < 0.1 |
+
+## 图片优化
+
+### 使用 Next.js Image 组件
+
+```tsx
+import Image from "next/image";
+
+<Image
+  src="/hero.jpg"
+  alt="Hero"
+  width={1200}
+  height={600}
+  priority        // 首屏图片预加载
+  placeholder="blur"
+  blurDataURL="..."
+/>
+```
+
+### 响应式图片
+
+```html
+<picture>
+  <source srcset="image.avif" type="image/avif" />
+  <source srcset="image.webp" type="image/webp" />
+  <img src="image.jpg" alt="Fallback" />
+</picture>
+```
+
+## 代码分割
+
+### 动态导入
+
+```tsx
+import dynamic from "next/dynamic";
+
+const HeavyChart = dynamic(() => import("./Chart"), {
+  loading: () => <div className="h-64 animate-pulse bg-zinc-800 rounded-xl" />,
+  ssr: false,
+});
+```
+
+### Route-based Splitting
+
+Next.js App Router 天然按路由分割代码，每个 `page.tsx` 自动成为独立 chunk。
+
+## 缓存策略
+
+```tsx
+// ISR - 增量静态再生
+async function Page() {
+  const res = await fetch("https://api.example.com/data", {
+    next: { revalidate: 3600 },
+  });
+}
+
+// 完全静态
+export const dynamic = "force-static";
+
+// 完全动态
+export const dynamic = "force-dynamic";
+```
+
+## 字体优化
+
+使用 `next/font` 避免 FOUT（无样式文字闪烁）：
+
+```tsx
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap", // 字体加载期间使用系统字体
+});
+```
+
+## 清单总结
+
+- ✅ 使用 `next/image` 处理所有图片
+- ✅ 首屏关键资源使用 `priority` 预加载
+- ✅ 非首屏组件使用 `dynamic` 延迟加载
+- ✅ 合理设置缓存策略（ISR / Static / Dynamic）
+- ✅ 使用 `next/font` 优化字体加载
+- ✅ 定期用 Lighthouse 检测性能指标

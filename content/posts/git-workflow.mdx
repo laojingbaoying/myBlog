@@ -1,0 +1,71 @@
+---
+title: "团队 Git 工作流最佳实践"
+date: "2026-02-28"
+excerpt: "从 Git Flow 到 Trunk Based，选择适合你团队的分支策略和 CI/CD 流程。"
+tags: ["Git", "工程化"]
+---
+
+## 常见分支策略对比
+
+### Git Flow
+
+适合发布周期较长的项目：
+
+```
+main ─────────────────────────────────
+  └─ develop ─────────────────────────
+       ├─ feature/login ──┘
+       ├─ feature/dashboard ──┘
+       └─ release/1.0 ───────── main
+```
+
+### Trunk Based Development
+
+适合持续部署的现代团队：
+
+```
+main ─────────────────────────────────
+  ├─ feat/login (短生命周期) ──┘
+  ├─ feat/dashboard ──┘
+  └─ fix/bug-123 ──┘
+```
+
+## 推荐的 Commit 规范
+
+使用 **Conventional Commits**：
+
+```
+feat: 添加用户登录功能
+fix: 修复首页加载闪屏问题
+docs: 更新 API 文档
+style: 调整代码格式
+refactor: 重构用户模块
+perf: 优化列表页渲染性能
+test: 补充单元测试
+chore: 更新依赖版本
+```
+
+## PR 最佳实践
+
+1. **小而频繁** — 每个 PR 控制在 200 行以内
+2. **描述清晰** — 说明背景、改动内容、影响范围
+3. **自动检查** — CI 跑通 lint + test + build
+4. **及时 review** — 不要让 PR 超过 24 小时无人处理
+
+## 实用 Git 命令
+
+```bash
+# 交互式 rebase，整理提交历史
+git rebase -i HEAD~3
+
+# 暂存当前改动
+git stash push -m "work in progress"
+
+# 查看某行代码的修改历史
+git log -p -S "function_name" -- path/to/file
+
+# cherry-pick 某个提交到当前分支
+git cherry-pick abc123
+```
+
+良好的 Git 工作流是团队高效协作的基础。
