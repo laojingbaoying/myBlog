@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-# myBlog
-学习测试
-=======
+
 # Qiuge’s Blog
 
 一个基于 Next.js 15 构建的个人技术博客项目，支持 MDX 文章、归档、搜索、评论、登录、访问统计、主题切换和 SEO 配置。
@@ -299,4 +296,11 @@ featured: false
 ## License
 
 仅用于学习与个人项目实践。
+
 >>>>>>> laojingbaoying-feature
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
