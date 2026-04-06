@@ -1,0 +1,66 @@
+---
+title: "TypeScript 类型体操入门到放弃"
+date: "2026-03-10"
+excerpt: "从泛型到条件类型，从 infer 到模板字面量类型，一文搞懂 TS 高级类型。"
+tags: ["TypeScript", "前端"]
+---
+
+## 泛型基础
+
+泛型让函数和类型变得通用可复用：
+
+```ts
+function identity<T>(value: T): T {
+  return value;
+}
+
+const num = identity(42);       // number
+const str = identity("hello");  // string
+```
+
+## 条件类型
+
+```ts
+type IsString<T> = T extends string ? "yes" : "no";
+
+type A = IsString<string>;  // "yes"
+type B = IsString<number>;  // "no"
+```
+
+## infer 关键字
+
+`infer` 在条件类型中提取类型：
+
+```ts
+type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+
+type Fn = () => string;
+type Result = ReturnType<Fn>; // string
+```
+
+## 模板字面量类型
+
+TypeScript 4.1+ 支持模板字面量类型：
+
+```ts
+type EventName<T extends string> = `on${Capitalize<T>}`;
+
+type ClickEvent = EventName<"click">; // "onClick"
+type FocusEvent = EventName<"focus">; // "onFocus"
+```
+
+## 实用工具类型
+
+```ts
+// 将对象所有属性变为可选的深层版本
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+// 选取对象中值为指定类型的键
+type PickByValue<T, V> = {
+  [K in keyof T as T[K] extends V ? K : never]: T[K];
+};
+```
+
+掌握这些类型技巧，你就能写出更类型安全的 TypeScript 代码。

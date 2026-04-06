@@ -1,0 +1,87 @@
+---
+title: "Next.js 15 App Router 完全指南"
+date: "2026-03-28"
+excerpt: "深入解析 Server Components、流式渲染、并行路由等核心特性，附带实战示例。"
+tags: ["Next.js", "React", "前端"]
+coverImage: "/images/lls2.png"
+featured: true
+---
+
+## App Router 的核心变化
+
+Next.js 15 的 App Router 带来了全新的开发模式，让我们来逐一了解。
+
+### Server Components
+
+默认情况下，App Router 中的组件都是 **Server Components**。这意味着它们在服务端渲染，不会增加客户端 JavaScript bundle 体积。
+
+```tsx
+// 这是一个 Server Component（默认）
+async function BlogList() {
+  const posts = await getPosts(); // 直接在组件中获取数据
+
+  return (
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### 何时使用 Client Components
+
+当你需要以下功能时，使用 `"use client"` 指令：
+
+- **状态管理** — `useState`, `useReducer`
+- **生命周期** — `useEffect`
+- **浏览器 API** — `window`, `document`
+- **事件处理** — `onClick`, `onChange`
+
+```tsx
+"use client";
+
+import { useState } from "react";
+
+export function LikeButton() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>👍 {count}</button>;
+}
+```
+
+## 布局系统
+
+App Router 引入了嵌套布局的概念：
+
+```
+app/
+├── layout.tsx        # 根布局
+├── page.tsx          # 首页
+├── blog/
+│   ├── layout.tsx    # 博客布局（继承根布局）
+│   ├── page.tsx      # 博客列表
+│   └── [slug]/
+│       └── page.tsx  # 文章详情
+```
+
+每个 `layout.tsx` 会自动包裹其下所有页面，并且在导航时**不会重新渲染**。
+
+## 数据获取
+
+App Router 中推荐使用 `async/await` 直接在 Server Components 中获取数据：
+
+```tsx
+async function Page() {
+  const data = await fetch("https://api.example.com/posts", {
+    next: { revalidate: 3600 }, // ISR: 每小时重新验证
+  });
+  const posts = await data.json();
+
+  return <PostList posts={posts} />;
+}
+```
+
+## 总结
+
+App Router 是 Next.js 的未来，虽然学习曲线较 Pages Router 略陡，但它提供了更好的性能、更灵活的布局系统和更优雅的数据获取方式。

@@ -1,0 +1,144 @@
+---
+title: "10 个让你效率翻倍的 Tailwind CSS 技巧"
+date: "2026-03-20"
+excerpt: "从自定义主题到动态类名，掌握这些技巧让你的样式编写更加得心应手。"
+tags: ["CSS", "Tailwind", "前端"]
+coverImage: "/images/lls3.png"
+featured: true
+---
+
+## 1. 善用 `cn()` 工具函数
+
+将 `clsx` 和 `tailwind-merge` 组合使用，优雅处理条件类名和冲突覆盖：
+
+```ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+使用时：
+
+```tsx
+<div className={cn(
+  "rounded-lg p-4",
+  isActive && "bg-blue-500",
+  className // 外部传入的类名可以覆盖默认样式
+)} />
+```
+
+## 2. 利用 `group` 和 `peer` 实现联动
+
+```html
+<div className="group cursor-pointer rounded-xl border p-4 hover:border-violet-500">
+  <h3 className="group-hover:text-violet-400 transition-colors">标题</h3>
+  <p className="group-hover:text-zinc-300 text-zinc-500">描述</p>
+</div>
+```
+
+## 3. 自定义动画
+
+在 `tailwind.config.ts` 中定义自定义关键帧：
+
+```ts
+theme: {
+  extend: {
+    animation: {
+      "fade-in": "fadeIn 0.5s ease-in-out",
+      "slide-up": "slideUp 0.5s ease-out",
+    },
+    keyframes: {
+      fadeIn: {
+        "0%": { opacity: "0" },
+        "100%": { opacity: "1" },
+      },
+    },
+  },
+}
+```
+
+## 4. 使用 `@apply` 提取重复样式
+
+对于频繁使用的样式组合，可以在 CSS 中提取：
+
+```css
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  background-color: #8b5cf6;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: white;
+  transition: background-color 0.15s;
+}
+```
+
+## 5. 响应式设计技巧
+
+Tailwind 的断点是 **mobile-first** 的：
+
+```html
+<!-- 移动端 1 列，平板 2 列，桌面 3 列 -->
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  ...
+</div>
+```
+
+## 6. 暗色模式
+
+使用 `dark:` 变体：
+
+```html
+<div className="bg-white dark:bg-zinc-900 text-black dark:text-white">
+  自动适配暗色模式
+</div>
+```
+
+## 7. 渐变技巧
+
+多途径实现漂亮的渐变效果：
+
+```html
+<div className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500">
+  渐变背景
+</div>
+
+<span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-pink-400">
+  渐变文字
+</span>
+```
+
+## 8. 容器查询
+
+Tailwind v4 支持原生容器查询：
+
+```html
+<div className="@container">
+  <div className="@lg:grid-cols-2 grid grid-cols-1">
+    响应容器宽度而非视口宽度
+  </div>
+</div>
+```
+
+## 9. 使用 `ring` 替代 `border` 做焦点样式
+
+```html
+<input className="ring-1 ring-zinc-700 focus:ring-2 focus:ring-violet-500 outline-none" />
+```
+
+`ring` 不会影响布局，过渡更自然。
+
+## 10. 合理使用 `size-*`
+
+Tailwind v4 的 `size-*` 同时设置宽高：
+
+```html
+<div className="size-10"><!-- 等同于 w-10 h-10 --></div>
+<img className="size-12 rounded-full" />
+```
+
+掌握这些技巧，你的 Tailwind CSS 开发效率将大幅提升！
