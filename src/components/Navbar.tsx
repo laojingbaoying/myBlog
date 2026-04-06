@@ -55,7 +55,7 @@ export function Navbar() {
           href="/"
           className="text-xl font-bold tracking-tight transition-colors hover:text-violet-500 dark:hover:text-violet-400"
         >
-          <span className="text-gradient">MyBlog</span>
+          <span className="text-gradient">Qiuge’s Blog</span>
         </Link>
 
         {/* 桌面端导航 */}
